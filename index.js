@@ -20,11 +20,20 @@ app.get('/api/hello', function(req, res) {
 });
 
 app.post("/api/shorturl", function (req, res) {
+  let body_url = req.body.url;
+  try {
+    let url = new URL(body_url);
+  } catch (_) {
+    return res.json({ error: "invalid url" });
+  }
+  if (!body_url.includes("https://") && !body_url.includes("http://")) {
+    return res.json({ error: "invalid url" });
+  }
   res.json({ original_url: req.body.url, short_url: 1 });
 });
 
-app.post("/api/shorturl/:short_url", function (req, res) {
-  res.json({ original_url: req.body.url });
+app.get("/api/shorturl/:short_url", function (req, res) {
+  res.redirect(req.body.url);
 });
 
 app.listen(port, function() {
